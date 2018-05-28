@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Text;
 using System.Net;
+using System.Collections.Generic;
+using System.Linq;
+using System.Globalization;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 namespace Parser
@@ -13,12 +16,16 @@ namespace Parser
       public static string dateparser(string text){
         string output = "";
         //match regex to get dates
-        MatchCollection matches = Regex.Matches(text, @"\d+[./-]\d+[./-]\d+|\w{3,9}?\s\d{1,2}?\s?,\s\d{4}?|\d{1,2}?\s\w{3,9}?\s\d{4}?");
+        MatchCollection matches = Regex.Matches(text, @"\d+[./-]\d+[./-]\d+|\w{3,9}?\s\d{1,2}?\s?,\s\d{4}?|\d{1,2}?\s\w{3,9}?\s\d{4}?|\d{4}?\w{3,9}?-\d{1,2}?");
         foreach (Match match in matches)
         {
           foreach (Capture capture in match.Captures)
-          {
-            output = output + capture.Value + "\n";
+          { 
+            //Only return valid dates 
+            DateTime temp;
+            if(DateTime.TryParse(capture.Value, out temp)){
+              output = output + capture.Value + "\n";
+          }
           }
         }
         return output;

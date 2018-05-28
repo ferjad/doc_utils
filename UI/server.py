@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 from flask import Flask, render_template, request
 import requests
@@ -62,8 +63,8 @@ def upload_file():
 
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.connect(("parser", 9400))
-            s.sendall(tessout.encode())
-            data = s.recv(1024)
+            s.sendall(tessout.encode('utf-8'))
+            data = s.recv(1024000)
             dateout=data.decode('utf-8')
             s.close()
 
