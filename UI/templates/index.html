@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>UI</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+
+<body>
+
+<header class="navbar navbar-default">
+  <span class="navbar-text"> User Interface
+  </span>
+</header>
+
+<div style="text-align: center; margin-top:5%">
+      <div style="width: 500px; margin: 0 auto;">
+
+
+<form action="/upload" method="post" enctype="multipart/form-data" >
+    <label class="btn btn-default btn-file">
+        Browse <input <input type="file" name="image" style="display: none;">
+    </label>
+      <br><br><input type="checkbox" name="tesseract" value="Bike">Tesseract
+      <input type="checkbox" name="dateparser" value="Bike">Find Date
+      <input type="checkbox" name="classify" value="Bike">Classify<br><br>
+    <input type="submit" value="Upload your image" class="btn btn-primary">
+</form>
+
+</div>
+</div>
+<div class="text-center">
+    {% if init %}
+        {% if invalidImage %}
+            <div class="alert alert-danger" style="margin-top:18px;">
+                <strong>Error</strong> Your image contain invalid content !
+            </div>
+        {% else %}
+            <div class="alert alert-success" style="margin-top:18px;">
+                <strong>Success!</strong>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+
+<div class="row" style="margin:2%">
+  <div class="col-sm-4" style="border-color:black;border-style: solid; height:500px" ><h2>Tesseract Output</h2><br>{{ tessout }}</div>
+  <div class="col-sm-4" style="border-color:black;border-style: solid;height:500px"><h2>Document type</h2><br>{{ classifyout }}</div>
+  <div class="col-sm-4" style="border-color:black;border-style: solid;height:500px"><h2>Dates extracted</h2><br>{{ dateout }}</div>
+</div>
+</body>
+</html>
