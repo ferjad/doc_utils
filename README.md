@@ -15,6 +15,7 @@ The extracted text is communicated back to the UI server.
 The UI server passes the extracted text to a regex based parser written in C# using TCP socket. 
 The service is running in a docker container using the .NET core framework.
 The extracted date is communicated back to the UI server using TCP socket.
+Formats supported are listed on: https://www.c-sharpcorner.com/blogs/date-and-time-format-in-c-sharp-programming1
 
 # Document Classification
 A deep neural network is trained to classify documents into 9 classes from the Tobacco dataset. 
