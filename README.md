@@ -19,8 +19,8 @@ Formats supported are listed on: https://www.c-sharpcorner.com/blogs/date-and-ti
 
 # Document Classification
 A deep neural network is trained to classify documents into 9 classes from the Tobacco dataset. 
-classes=['Advertising', 'Email','Form', 'Letter', 'Memo', 'News', 'Note','Report','Resume','Scientific']
-Renet 152 is fine tuned by removing the final layer and then training for the mentioned classes for 50 epochs.
+classes=['Advertising', 'Email','Form', 'Letter', 'Memo', 'News', 'Note','Report','Resume','Scientific'].
+Renet 152 is fine tuned by removing the final layer and then trained for the mentioned classes for 50 epochs.
 The image is passed to the document classifier by the UI server. 
 The classifier predicts the class and sends it back to the UI server.
 
