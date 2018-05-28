@@ -4,11 +4,10 @@ import requests
 import socket
 app = Flask(__name__)
 
-
-
 # folder to save files
 UPLOAD_FOLDER = os.path.basename('uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+ALLOWED_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.gif','.tiff']
 
 # load index.html on start
 @app.route('/')
@@ -19,54 +18,67 @@ def start_up():
 @app.route('/upload', methods=['POST'])
 def upload_file():
 
-    #get image file
-    file = request.files['image']
-    #get filename
-    filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-    #save file
-    file.save(filename)
-
     #output strings
     classifyout = ""
     tessout = ""
     dateout = ""
     invalidImage = False
 
-    #if tesseract output checked, return the text output
-    if(request.form.get('tesseract')):
-        urltess = "http://tesseract:9200"
-        fin = open(filename, 'rb')
-        files = {'file': fin}
-        try:
-            r = requests.post(urltess, files=files)
-            print (r.text)
-            tessout = r.text
-        finally:
-            fin.close()
+    #get image file
+    file = request.files['image']
+    #get filename
+    filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    if(os.path.splitext(filename)[1] in ALLOWED_EXTENSIONS):
+        #save file
+        file.save(filename)
 
 
-    #send tesseract output to dateparser if dateparser checked, if tesseract output is unchecked, this will return nothing
-    if(request.form.get('dateparser')):
-        print('dateparser checked')
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect(("parser", 9400))
-        s.sendall(tessout.encode())
-        data = s.recv(1024)
-        dateout=data.decode('utf-8')
-        s.close()
+        #if tesseract output checked, return the text output
+        if(request.form.get('tesseract')):
+            urltess = "http://tesseract:9200"
+            fin = open(filename, 'rb')
+            files = {'file': fin}
+            try:
+                r = requests.post(urltess, files=files)
+                tessout = r.text
+            finally:
+                fin.close()
 
-    #send file to classifier
-    if(request.form.get('classify')):
-        urlclassify = "http://111.68.101.28:10000"
-        fin = open(filename, 'rb')
-        files = {'file': fin}
-        try:
-            r = requests.post(urlclassify, files=files)
-            print (r.text)
-            classifyout = r.text
-        finally:
-            fin.close()
 
+        #send tesseract output to dateparser if dateparser checked, if tesseract output is unchecked, this will return nothing
+        if(request.form.get('dateparser')):
+
+            # if dateparser is checked but tesseract is not checked, run tesseract first
+            if not request.form.get('tesseract'):
+                urltess = "http://tesseract:9200"
+                fin = open(filename, 'rb')
+                files = {'file': fin}
+                try:
+                    r = requests.post(urltess, files=files)
+                    tessout = r.text
+                finally:
+                    fin.close()
+
+
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.connect(("parser", 9400))
+            s.sendall(tessout.encode())
+            data = s.recv(1024)
+            dateout=data.decode('utf-8')
+            s.close()
+
+        #send file to classifier
+        if(request.form.get('classify')):
+            urlclassify = "http://111.68.101.28:10000"
+            fin = open(filename, 'rb')
+            files = {'file': fin}
+            try:
+                r = requests.post(urlclassify, files=files)
+                classifyout = r.text
+            finally:
+                fin.close()
+    else:
+        invalidImage = True
 
 
     #return template with output
