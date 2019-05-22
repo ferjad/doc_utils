@@ -26,7 +26,7 @@ The classifier predicts the class and sends it back to the UI server.
 
 # Web UI
 The web UI is operating in a docker and uses TCP to communicate with the above mentioned services. 
-The server is based on Flash in Python.
+The server is based on Flask in Python.
 
 # Set up
 Run 'bash setup.sh' from base directory.
